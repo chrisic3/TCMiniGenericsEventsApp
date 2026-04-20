@@ -9,11 +9,13 @@ namespace TCMiniGenericsEventsLibrary
 {
     public class DataAccess<T> where T: new()
     {
+        public event EventHandler<T> BadEntryFound;
+
         public void SaveToCsv(List<T> items, string filePath)
         {
             T entry = new T();
             List<string> rows = new List<string>();
-            var columns = entry.GetType().GetProperties();
+            var columns = entry.GetType().GetProperties(); // reflection to get properties of T
             string row = string.Empty;
 
             foreach (var column in columns)
@@ -21,7 +23,7 @@ namespace TCMiniGenericsEventsLibrary
                 row += $"{column.Name},";
             }
 
-            row = row.TrimEnd(',');
+            row = row.TrimEnd(','); // remove trailing comma
             rows.Add(row);
 
             foreach (var item in items)
@@ -31,12 +33,13 @@ namespace TCMiniGenericsEventsLibrary
 
                 foreach (var column in columns)
                 {
-                    string value = column.GetValue(item).ToString();
+                    string value = column.GetValue(item).ToString(); 
                     isBadWord = BadWordChecker.BadWordCheck(value);
 
                     if (isBadWord)
                     {
-                        break;
+                        BadEntryFound?.Invoke(this, item); // raise event for bad entry
+                        break; // skip the rest of the columns for this item if a bad word is found
                     }
 
                     row += $"{value},";
