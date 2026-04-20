@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="TCMiniGenericsEvents/TCMiniGenericsEvents.csproj" />
+  <Project Path="TCMiniGenericsEventsLibrary/TCMiniGenericsEventsLibrary.csproj" />
+</Solution>
